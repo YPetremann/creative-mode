@@ -1,0 +1,37 @@
+--------------------------------------------------
+Version 1.5.0
+Date 25.3.2015
+  Changes:
+    - Potential fix for tooltip issue again
+--------------------------------------------------
+Version 1.4.0
+Date 17.3.2015
+  Changes:
+    - Potential fix for tooltip issue
+    - Blacklisted player for creative chest insertion and void chest cleaning
+--------------------------------------------------
+Version 1.3.0
+Date 15.3.2015
+  Features:
+    - Added liquid support
+--------------------------------------------------
+Version 1.2.0
+Date 10.3.2015
+  Features:
+    - Added that void chest can take from container
+  Changes:
+    - Little code refactoring
+--------------------------------------------------
+Version 1.1.0
+Date 9.3.2015
+  Features:
+    - Added Zero point energy generator
+    - Added Black hole energy consumer
+  Changes:
+    - Little code refactoring
+--------------------------------------------------
+Version 1.0.0
+Date 9.3.2015
+  Features:
+    - Added creative chest
+    - Added void chest

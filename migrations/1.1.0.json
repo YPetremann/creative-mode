@@ -1,0 +1,6 @@
+{
+  "entity": [
+    ["creative-chest","item-source"],
+    ["void-chest","item-sink"]
+  ]
+}
