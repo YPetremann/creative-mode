@@ -68,6 +68,7 @@ chest_input = {
 function oninit()
   if not glob.item_source then glob.item_source = {} end
   if not glob.item_sink then glob.item_sink = {} end
+  if not glob.creative_chest then glob.creative_chest = {} end
   if not glob.energy_source then glob.energy_source = {} end
   if not glob.energy_sink then glob.energy_sink = {} end
 end
@@ -76,6 +77,8 @@ function onbuiltentity(event)
     table.insert(glob.item_source, event.createdentity)
   elseif event.createdentity.name == "item-sink" then
     table.insert(glob.item_sink, event.createdentity)
+  elseif event.createdentity.name == "creative-chest" then
+    table.insert(glob.creative_chest, event.createdentity)
   elseif event.createdentity.name == "energy-source" then
     table.insert(glob.energy_source, event.createdentity)
   elseif event.createdentity.name == "energy-sink" then
@@ -119,6 +122,25 @@ function ontick(event)
       end
     else
       table.remove(glob.item_source, index)
+    end
+  end
+  if game.tick % 60 == 0 then
+    for index, creative_chest in ipairs(glob.creative_chest) do
+      if creative_chest.valid then
+        storage=creative_chest.getinventory(1)
+        storage.clear()
+        for i = 1, 10 , 1 do
+          request = creative_chest.getrequestslot(i)
+          if request ~= nil and request.count > 0 then
+            if game.itemprototypes[request.name].stacksize*10 < request.count then
+              request.count = game.itemprototypes[request.name].stacksize*10
+            end
+            storage.insert(request)
+          end
+        end
+      else
+        table.remove(glob.creative_chest, index)
+      end
     end
   end
   if game.tick % 60 == 0 then
@@ -241,6 +263,52 @@ function inputfluid(position)
     end
   end
 end
+
+function onresearchfinished(event)
+  if glob.search ~= true then
+    glob.search = true
+    game.player.force.technologies[event.research].researched=true
+    local targets = {"rocket-defense"}
+    local searching = true
+    print()
+    for _,target in pairs(targets) do
+      print(">>> Test "..target)
+      current = game.player.force.technologies[target]
+      while searching do
+        print("... "..current.name)
+        if current.researched then 
+          print("    Already researched")
+          print(">>> Try next in queue")
+          break
+        else
+          print("    Not researched")
+          print(">>> Test prerequisites")
+          local available = true
+          for _,pre in pairs(current.prerequisites) do
+            print("... "..pre.name)
+            if not pre.researched then 
+              print("    Not researched")
+              print(">>> Try "..pre.name)
+              available = false
+              current = pre
+              break
+            else
+              print("    Already researched")
+            end
+          end
+          if available then
+            print(">>> "..current.name)
+            game.forces.player.currentresearch = current.name
+            searching = false
+          end
+        end
+      end
+    end
+    print("    No more research in queue")
+    glob.search = false
+  end
+end
+
 
 onload = oninit
 onrobotbuiltentity = onbuiltentity
